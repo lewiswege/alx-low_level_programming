@@ -15,4 +15,4 @@ void puts2(char *str)
 		_putchar(str[string]);
 	_putchar('\n');
 }
-//lewis softwares
+
