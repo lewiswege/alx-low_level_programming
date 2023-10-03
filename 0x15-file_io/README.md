@@ -1,0 +1,1 @@
+This repo contains projects on file handling in C, covers the concepts on file input and output operations: creating reading closing and writing to a file, file descriptors system calls and permissions.
