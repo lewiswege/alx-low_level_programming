@@ -1,45 +1,58 @@
 #include "search_algos.h"
+#include <math.h>
+
+/* remember compiling math.h with gcc requires `-lm` */
+
+size_t min(size_t a, size_t b);
 
 /**
- * jump_list - Searching for an algorithm in a sorted singly
- *             linked list of integers using jump search.
- * @list: A pointer to the  head of the linked list to search.
- * @size: The number of nodes in the list.
- * @value: The value to search for.
+ * min - returns the minimum of two size_t values
+ * @a: first value
+ * @b: second value
  *
- * Return: If the value is not present or the head of the list is NULL, NULL.
- *         Otherwise, a pointer to the first node where the value is located.
- *
- * Description: Prints a value every time it is compared in the list.
- *              Uses the square root of the list size as the jump step.
+ * Return: `a` if lower or equal to `b`, `b` otherwise
  */
-listint_t *jump_list(listint_t *list, size_t size, int value)
+size_t min(size_t a, size_t b)
 {
-	size_t step, step_size;
-	listint_t *node, *jump;
+	return (a <= b ? a : b);
+}
 
-	if (list == NULL || size == 0)
-		return (NULL);
+/**
+ * jump_search - searches for a value in a sorted array of integers using
+ * a jump search algorithm
+ * @array: pointer to first element of array to search
+ * @size: number of elements in array
+ * @value: value to search for
+ *
+ * Return: first index containing `value`, or -1 if `value` not found or
+ * `array` is NULL
+ */
 
-	step = 0;
-	step_size = sqrt(size);
-	for (node = jump = list; jump->index + 1 < size && jump->n < value;)
+int jump_search(int *array, size_t size, int value)
+{
+	size_t low, high, jump;
+
+	if (!array || size == 0)
+		return (-1);
+
+	jump = sqrt(size);
+
+	for (high = 0; high < size && array[high] < value;
+	     low = high, high += jump)
 	{
-		node = jump;
-		for (step += step_size; jump->index < step; jump = jump->next)
-		{
-			if (jump->index + 1 == size)
-				break;
-		}
-		printf("Value checked at index [%ld] = [%d]\n", jump->index, jump->n);
+		printf("Value checked array[%lu] = [%d]\n",
+		       high, array[high]);
 	}
 
-	printf("Value found between indexes [%ld] and [%ld]\n",
-			node->index, jump->index);
+	/* causes 'found' msg even when value not in array */
+	printf("Value found between indexes [%lu] and [%lu]\n", low, high);
 
-	for (; node->index < jump->index && node->n < value; node = node->next)
-		printf("Value checked at index [%ld] = [%d]\n", node->index, node->n);
-	printf("Value checked at index [%ld] = [%d]\n", node->index, node->n);
+	for (; low <= min(high, size - 1); low++)
+	{
+		printf("Value checked array[%lu] = [%d]\n", low, array[low]);
+		if (array[low] == value)
+			return (low);
+	}
 
-	return (node->n == value ? node : NULL);
+	return (-1);
 }
